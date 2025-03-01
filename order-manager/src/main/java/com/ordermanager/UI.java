@@ -1,13 +1,17 @@
 package com.ordermanager;
 
+import java.lang.foreign.Linker.Option;
+import java.sql.Connection;
+import java.util.Optional;
 import java.util.Scanner;
 
+import com.ordermanager.daos.OrderDAOImpl;
+import com.ordermanager.models.ConnectionManager;
 
 public class UI {
 
-
     public static void main(String[] args) {
-        final boolean running = true;
+        boolean running = true;
 
         // Main menu
         while (running) {
@@ -19,7 +23,7 @@ public class UI {
                     4. Exit
                     """);
             String input = choice();
-            
+
             firstCase(input);
         }
     }
@@ -28,12 +32,11 @@ public class UI {
         Scanner s = new Scanner(System.in);
         System.out.print(">>> ");
         String userInput = s.nextLine();
-        s.close();
         return userInput;
     }
 
     public static void firstCase(String input) {
-        switch(input) {
+        switch (input) {
             case "1":
                 System.out.println("Loading orders...");
                 orders();
@@ -55,17 +58,37 @@ public class UI {
     }
 
     public static void orders() {
+        
         System.out.println("""
                 1. Create order
                 2. View orders
                 3. Delete order
-                3. Back / exit
+                4. Back / exit
                 """);
         String input = choice();
-        switch(input) {
+        switch (input) {
             case "1":
-                System.out.println("Pass");
+                System.out.println("Creating order...");
+                // Add logic to create order
+                break;
             case "2":
+                System.out.println("Viewing orders...");
+                Optional<Connection> conn = ConnectionManager.connection();
+                if (conn.isPresent()) {
+                    OrderDAOImpl orderDAO = new OrderDAOImpl(conn.get());
+                    orderDAO.getOrdersByCustomerId(1).forEach(System.out::println);
+                } 
+                // Add logic to view orders
+                break;
+            case "3":
+                System.out.println("Deleting order...");
+                // Add logic to delete order
+                break;
+            case "4":
+                System.out.println("Exiting orders menu...");
+                break;
+            default:
+                System.out.println("Invalid choice");
         }
     }
 
@@ -73,14 +96,28 @@ public class UI {
         System.out.println("""
                 1. Add customer
                 2. View customers
-                3. Delete order
-                3. Back / exit
+                3. Delete customer
+                4. Back / exit
                 """);
         String input = choice();
-        switch(input) {
+        switch (input) {
             case "1":
                 System.out.println("Adding customer...");
+                // Add logic to add customer
                 break;
+            case "2":
+                System.out.println("Viewing customers...");
+                // Add logic to view customers
+                break;
+            case "3":
+                System.out.println("Deleting customer...");
+                // Add logic to delete customer
+                break;
+            case "4":
+                System.out.println("Exiting customers menu...");
+                break;
+            default:
+                System.out.println("Invalid choice");
         }
     }
 
@@ -88,10 +125,28 @@ public class UI {
         System.out.println("""
                 1. Add item
                 2. View items
-                3. 
+                3. Delete item
                 4. Back / exit
                 """);
-        // String input = choice();
+        String input = choice();
+        switch (input) {
+            case "1":
+                System.out.println("Adding item...");
+                // Add logic to add item
+                break;
+            case "2":
+                System.out.println("Viewing items...");
+                // Add logic to view items
+                break;
+            case "3":
+                System.out.println("Deleting item...");
+                // Add logic to delete item
+                break;
+            case "4":
+                System.out.println("Exiting items menu...");
+                break;
+            default:
+                System.out.println("Invalid choice");
+        }
     }
-    
 }
