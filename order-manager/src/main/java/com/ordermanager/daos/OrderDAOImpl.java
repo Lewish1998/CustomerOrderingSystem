@@ -52,6 +52,7 @@ public class OrderDAOImpl implements OrderDAO {
             if (affectedRows > 0) {
                 ResultSet keys = stmt.getGeneratedKeys();
                 if (keys.next()) {
+                    System.out.println("Order created with ID: " + keys.getInt(1) + "\n");
                     return keys.getInt(1);
                 }
             }

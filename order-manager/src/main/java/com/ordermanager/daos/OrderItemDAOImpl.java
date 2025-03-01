@@ -42,6 +42,7 @@ public class OrderItemDAOImpl implements OrderItemDAO {
             stmt.setInt(2, itemId);
             stmt.setInt(3, quantity);
             stmt.setDouble(4, price);
+            System.out.println("Item added to order\n");
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();

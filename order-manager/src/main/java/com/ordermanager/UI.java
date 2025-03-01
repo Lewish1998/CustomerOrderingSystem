@@ -1,21 +1,22 @@
 package com.ordermanager;
 
-import java.lang.foreign.Linker.Option;
 import java.sql.Connection;
 import java.util.Optional;
 import java.util.Scanner;
+import com.ordermanager.models.Order;
 
 import com.ordermanager.daos.OrderDAOImpl;
+import com.ordermanager.daos.OrderItemDAOImpl;
 import com.ordermanager.models.ConnectionManager;
 
 public class UI {
 
     public static void main(String[] args) {
         boolean running = true;
+        System.out.println("Customer Ordering System starting...");
 
         // Main menu
         while (running) {
-            System.out.println("Customer Ordering System starting...");
             System.out.println("""
                     1. Orders
                     2. Customers
@@ -69,14 +70,24 @@ public class UI {
         switch (input) {
             case "1":
                 System.out.println("Creating order...");
+                Optional<Connection> conn = ConnectionManager.connection();
+                if (conn.isPresent()) {
+                    OrderDAOImpl orderDAO = new OrderDAOImpl(conn.get());
+                    OrderItemDAOImpl orderItemDAO = new OrderItemDAOImpl(conn.get());
+                    // Add order number input
+                    System.out.println("Enter customer number");
+                    String customerNumber = choice();
+                    orderDAO.createOrder(Integer.valueOf(customerNumber));
+                } 
                 // Add logic to create order
                 break;
             case "2":
                 System.out.println("Viewing orders...");
-                Optional<Connection> conn = ConnectionManager.connection();
-                if (conn.isPresent()) {
-                    OrderDAOImpl orderDAO = new OrderDAOImpl(conn.get());
+                Optional<Connection> conn2 = ConnectionManager.connection();
+                if (conn2.isPresent()) {
+                    OrderDAOImpl orderDAO = new OrderDAOImpl(conn2.get());
                     orderDAO.getOrdersByCustomerId(1).forEach(System.out::println);
+                    System.out.println();
                 } 
                 // Add logic to view orders
                 break;
