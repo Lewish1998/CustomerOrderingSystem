@@ -1,0 +1,31 @@
+CREATE TABLE customers (
+  id SERIAL PRIMARY KEY,
+  fname VARCHAR NOT NULL,
+  lname VARCHAR NOT NULL,
+  email VARCHAR NOT NULL UNIQUE,
+  created_at TIMESTAMP DEFAULT now(),
+  last_updated TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE items (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR NOT NULL UNIQUE,
+  price DOUBLE PRECISION NOT NULL,
+  quantity INTEGER DEFAULT 0 NOT NULL,
+  created_at TIMESTAMP DEFAULT now(),
+  last_updated TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE orders (
+  id SERIAL PRIMARY KEY,
+  customer_id INTEGER NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE order_items (
+  id SERIAL PRIMARY KEY,
+  order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  item_id INTEGER NOT NULL REFERENCES items(id) ON DELETE CASCADE,
+  quantity INTEGER DEFAULT 1 NOT NULL,
+  item_price_at_order DOUBLE PRECISION NOT NULL
+);
