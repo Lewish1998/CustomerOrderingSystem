@@ -28,19 +28,17 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
-    public List<Order> getOrdersByCustomerId(int customerId) {
-        List<Order> orders = new ArrayList<>();
-        String sql = "SELECT * FROM orders WHERE customer_id = ?";
+    public List<Order> getOrders() {
+        String sql = "SELECT * FROM orders;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, customerId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                orders.add(new Order(rs.getInt("id"), rs.getInt("customer_id"), rs.getTimestamp("created_at")));
+                System.out.println("ID: " + rs.getInt("id") + ", Customer ID: " + rs.getInt("customer_id") + ", Created At: " + rs.getTimestamp("created_at"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return orders;
+        return null;
     }
 
     @Override
