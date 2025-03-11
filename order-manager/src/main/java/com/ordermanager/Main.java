@@ -15,15 +15,20 @@ import com.ordermanager.models.ConnectionManager;
 
 public class Main {
 
+    // Create a scanner to accept user input
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+        // Create a boolean which will dictate whether or not the while loop is running
         boolean running = true;
 
+        // Call the startup screen before creating the while loop so that it only displays when first starting the program
         startupScreen();
 
         while (running) {
+            // Call function to clear screen. Improves legibility of the code.
             clearScreen();
+            // Print out the opttioins for the main menu
             System.out.println("""
                 ========================================
                  CUSTOMER ORDERING SYSTEM - MAIN MENU
@@ -33,6 +38,8 @@ public class Main {
                   3. Manage Items
                   4. Exit
                 """);
+            // Create a switch statement for the user input. The specified method is called dependent on the users input.
+            // Changed to switch statement instead of for loop as cleaner and easier to read for this use case.
             switch (getChoice()) {
                 case "1" -> ordersMenu();
                 case "2" -> customersMenu();
@@ -43,6 +50,7 @@ public class Main {
         }
     }
 
+    // sttartup function called before the while loop
     private static void startupScreen() {
         clearScreen();
         System.out.println("Customer Ordering System starting...");
@@ -56,6 +64,9 @@ public class Main {
 
     // ########## Orders ##########
 
+    /* This method prints a list of options for the user. A switch statement is then used to run the desired method based on the users input. 
+     * If an invalid choice is made by the user then it will run the invalid choioce method.
+    */
     private static void ordersMenu() {
         while (true) {
             clearScreen();
@@ -80,6 +91,9 @@ public class Main {
         }
     }
 
+    // This method takes in the user input of customer id, and returns information on the specified user.
+    // It makes user of the connection manager class to create a database connection.
+    // It also uses abstracttion as it is using methods from the OrderDAOImpl class to perform the necessary SQL commands required to return the desired data.
     private static void createOrder() {
         clearScreen();
         System.out.println("Enter customer ID:");
@@ -238,23 +252,6 @@ public class Main {
         promptEnterToContinue();
     }
 
-    // private static void editCustomer() {
-    //     clearScreen();
-    //     System.out.println("Enter Order ID to edit:");
-    //     int orderId = getIntChoice();
-
-    //     Optional<Connection> conn = ConnectionManager.connection();
-    //     if (conn.isPresent()) {
-    //         OrderItemDAOImpl orderItemDAO = new OrderItemDAOImpl(conn.get());
-    //         orderItemDAO.addItemToOrder(orderId, 1, 1, 1);
-    //         System.out.println("Item added to order.");
-    //     } else {
-    //         System.out.println("Database Connection Failed.");
-    //     }
-
-    //     promptEnterToContinue();
-    // }
-
     private static void deleteCustomer() {
         clearScreen();
         System.out.println("Enter Custommer ID to delete:");
@@ -291,7 +288,7 @@ public class Main {
                   4. Back to Main Menu
                 """);
             switch (getChoice()) {
-                case "1" -> System.out.println("Adding item... (Not Implemented)");
+                case "1" -> createItem();
                 case "2" -> viewItems();
                 case "3" -> System.out.println("Deleting item... (Not Implemented)");
                 case "4" -> { return; }
@@ -314,6 +311,50 @@ public class Main {
         promptEnterToContinue();
     }
 
+    public static void createItem() {
+        clearScreen();
+        System.out.println("Enter item name");
+        String name = scanner.nextLine();
+        System.out.println("Enter item price");
+        double price = Double.parseDouble(scanner.nextLine());
+        System.out.println("Enter item quantity");
+        int quantity = scanner.nextInt();
+        
+        Optional<Connection> conn = ConnectionManager.connection();
+        if (conn.isPresent()) {
+            ItemDAOImpl itemDAO = new ItemDAOImpl(conn.get());
+            itemDAO.createItem(name, price, quantity);
+            System.out.println("Item Created Successfully!");
+        } else {
+            System.out.println("Database Connection Failed.");
+        }
+        promptEnterToContinue();
+    }
+
+    public void deleteItem() {
+        clearScreen();
+        System.out.println("Enter Item ID to delete:");
+        int itemID = getIntChoice();
+        // Implement delete logic here
+        Optional<Connection> conn = ConnectionManager.connection();
+        if (conn.isPresent()) {
+            ItemDAOImpl itemDAO = new ItemDAOImpl(conn.get());
+            boolean res = itemDAO.deleteItem(itemID);
+            if (res) {
+            System.out.println("Item deleted successfully.");
+            } else {
+            System.out.println("Item not found.");
+            }
+        } else {
+            System.out.println("Database Connection Failed.");
+        }
+        promptEnterToContinue();
+    }
+
+    // ########## Utility Methods ##########
+
+    // These methods were created to make sure that the code in the main method is cleaner and allows for more reusability.
+    // The exitProgram metthod clears the screen, says goodbye to the user, and then exits the program.
     private static void exitProgram() {
         clearScreen();
         System.out.println("Goodbye!");
@@ -321,11 +362,13 @@ public class Main {
         System.exit(0);
     }
 
+    // The get choice method prints an indication for where the user will put their input, and then returns the trimmed user input.
     private static String getChoice() {
         System.out.print(">>> ");
         return scanner.nextLine().trim();
     }
 
+    // The getIntChoice method is very similar to the above method, but ensures that the user input is recieved as an integer instead of a String
     private static int getIntChoice() {
         while (true) {
             try {
@@ -342,11 +385,14 @@ public class Main {
         sleep(1);
     }
 
+    // When called waits for the user to press a key before continuing with the program.
     private static void promptEnterToContinue() {
         System.out.println("\nPress [ENTER] to continue...");
         scanner.nextLine();
     }
 
+    // Clears the screen by printing a specific command
+    // See https://stackoverflow.com/questions/55672661/what-does-printf-033h-033j-do-in-c for explination of print method (In C)
     private static void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
