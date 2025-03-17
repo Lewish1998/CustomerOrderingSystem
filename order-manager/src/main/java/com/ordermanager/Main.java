@@ -142,6 +142,12 @@ public class Main {
         clearScreen();
         System.out.println("Enter Order ID to edit:");
         int orderId = getIntChoice();
+        System.out.println("Enter Item ID to edit:");
+        int itemId = getIntChoice();
+        System.out.println("Enter new Item ID:");
+        int newItemId = getIntChoice();
+        System.out.println("Enter new Item Quantity:");
+        int itemQuantity = getIntChoice();
 
         Optional<Connection> conn = ConnectionManager.connection();
         if (conn.isPresent()) {
@@ -263,6 +269,32 @@ public class Main {
             boolean res = customerDAO.deleteCustomer(customerID);
             if (res) {
             System.out.println("Customer deleted successfully.");
+            } else {
+            System.out.println("Customer not found.");
+            }
+        } else {
+            System.out.println("Database Connection Failed.");
+        }
+        promptEnterToContinue();
+    }
+
+    public static void editCustomer() {
+        clearScreen();
+        System.out.println("Enter Customer ID to edit:");
+        int customerID = getIntChoice();
+        System.out.println("Enter new first name:");
+        String fname = scanner.nextLine();
+        System.out.println("Enter new last name:");
+        String lname = scanner.nextLine();
+        System.out.println("Enter new email:");
+        String email = scanner.nextLine();
+
+        Optional<Connection> conn = ConnectionManager.connection();
+        if (conn.isPresent()) {
+            CustomerDAOImpl customerDAO = new CustomerDAOImpl(conn.get());
+            boolean res = customerDAO.updateCustomer(customerID, fname, lname, email);
+            if (res) {
+            System.out.println("Customer updated successfully.");
             } else {
             System.out.println("Customer not found.");
             }

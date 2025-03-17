@@ -32,7 +32,7 @@ public class ItemDAOImpl implements ItemDAO {
 
     @Override
     public int createItem(String name, double price, int quantity) {
-            String sql = "INSERT INTO items (name, price) VALUES (?, ?)";
+            String sql = "INSERT INTO items (name, price, quantity) VALUES (?, ?, ?)";
             try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setString(1, name);
                 stmt.setDouble(2, price);
@@ -42,13 +42,13 @@ public class ItemDAOImpl implements ItemDAO {
                 ResultSet keys = stmt.getGeneratedKeys();
                 if (keys.next()) {
                     System.out.println("Item created with ID: " + keys.getInt(1) + "\n");
-                    // return keys.getInt(1);
+                    return keys.getInt(1);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return -1;
+        return 0;
     }
 
     @Override

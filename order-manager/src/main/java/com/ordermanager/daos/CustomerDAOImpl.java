@@ -80,6 +80,20 @@ public class CustomerDAOImpl implements CustomerDAO {
         return null;
     }
 
+    @Override
+    public boolean updateCustomer(int id, String fname, String lname, String email) {
+        String sql = "UPDATE customers SET fname = ?, lname = ?, email = ? WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, fname);
+            stmt.setString(2, lname);
+            stmt.setString(3, email);
+            stmt.setInt(4, id);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 
     

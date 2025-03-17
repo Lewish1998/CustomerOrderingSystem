@@ -35,6 +35,16 @@ public class OrderItemDAOImpl implements OrderItemDAO {
     }
 
     @Override
+    public int editItemInOrder(int orderId, int currentItemId, int newItemId, int quantity) {
+        // String sql = "UPDATE order_items SET item_id = ? WHERE order_id = ?";
+        // try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        //     stmt.setInt(newItemId, quantity);
+        // }
+
+        return 0;
+    }
+
+    @Override
     public boolean addItemToOrder(int orderId, int itemId, int quantity, double price) {
         String sql = "INSERT INTO order_items (order_id, item_id, quantity, item_price_at_order) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {

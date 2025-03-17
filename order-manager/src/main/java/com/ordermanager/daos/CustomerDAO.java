@@ -9,4 +9,5 @@ public interface CustomerDAO {
     List<Customer> getCustomers();
     int createCustomer(int customerId, String fname, String lname, String email);
     boolean deleteCustomer(int id);
+    boolean updateCustomer(int id, String fname, String lname, String email);
 }
